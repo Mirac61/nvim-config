@@ -1,0 +1,62 @@
+return {
+	{
+		"neovim/nvim-lspconfig",
+		event = { "BufReadPre", "BufNewFile" },
+		dependencies = {
+			{ "mason-org/mason.nvim", opts = {} },
+		},
+		config = function()
+			-- Formatter/Tools über mason nachinstallieren (einmalig)
+			local ensure_tools = {
+				"gopls",
+				"jdtls",
+				"clangd",
+				"tinymist",
+				"lua-language-server",
+				"marksman",
+				"stylua",
+				"gofumpt",
+				"goimports",
+				"typstyle",
+				"clang-format",
+				"google-java-format",
+				"prettier",
+				"tree-sitter-cli", -- zum Kompilieren der Treesitter-Parser
+				"sqls",
+			}
+			local registry = require("mason-registry")
+			registry.refresh(function()
+				for _, name in ipairs(ensure_tools) do
+					local ok, pkg = pcall(registry.get_package, name)
+					if ok and not pkg:is_installed() then
+						pkg:install()
+					end
+				end
+			end)
+
+			vim.diagnostic.config({
+				virtual_text = { spacing = 2 },
+				severity_sort = true,
+				float = { border = "rounded" },
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = " ",
+						[vim.diagnostic.severity.WARN] = " ",
+						[vim.diagnostic.severity.INFO] = " ",
+						[vim.diagnostic.severity.HINT] = " ",
+					},
+				},
+			})
+
+			vim.lsp.enable({
+				"gopls",
+				"jdtls",
+				"clangd",
+				"tinymist",
+				"lua_ls",
+				"marksman",
+				"sqls",
+			})
+		end,
+	},
+}
