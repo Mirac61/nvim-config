@@ -57,7 +57,7 @@ return {
 				["<CR>"] = { "accept", "fallback" },
 				["<Up>"] = { "select_prev", "fallback" },
 				["<Down>"] = { "select_next", "fallback" },
-				["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+				["<C-n>"] = { "show", "show_documentation", "hide_documentation" },
 				["<C-e>"] = { "hide" },
 			},
 			appearance = { nerd_font_variant = "normal" },
