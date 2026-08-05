@@ -35,6 +35,7 @@ return {
 				replace_netrw = true,
 			},
 			dashboard = {
+				width = 100,
 				preset = {
 					header = [[
 ███╗   ██╗██╗   ██╗██╗███╗   ███╗
@@ -45,15 +46,14 @@ return {
 ╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝]],
 				},
 				sections = {
-					-- Bild oben (chafa rendert es als Unicode-Halbblöcke).
-					-- Anderes Bild? Einfach ~/.config/nvim/assets/dashboard.png ersetzen.
 					{
 						section = "terminal",
 						cmd = "chafa "
 							.. vim.fn.stdpath("config")
-							.. "/assets/dashboard.png --format symbols --symbols vhalf --size 60x40; sleep .1",
-						height = 20,
+							.. "/assets/kanagawa.jpg --format symbols --symbols sextant --size 98x30 --align center; sleep .1",
+						height = 32,
 						padding = 1,
+						ttl = 0,
 					},
 					{
 						text = {

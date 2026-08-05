@@ -5,9 +5,9 @@
 #   Pink/Aqua:    minus #4A2B36 / emph #6B3D4C / nr #D27E99  |  plus #26403C / emph #375C55 / nr #7AA89F
 #   Violett/Blau: minus #3A2F4A / emph #52416B / nr #957FB8  |  plus #24404A / emph #33596A / nr #7FB4CA
 git:
-  pagers:
-    - colorArg: always
-      pager: 'delta --dark --paging=never --line-numbers --syntax-theme="Catppuccin Mocha" --minus-style="syntax #43242B" --plus-style="syntax #2B3328" --minus-emph-style="syntax bold #6D2E33" --plus-emph-style="syntax bold #405034" --line-numbers-minus-style="bold #E46876" --line-numbers-plus-style="bold #98BB6C" --hunk-header-style="file line-number syntax"'
+  paging:
+    colorArg: always
+    pager: 'delta --dark --paging=never --line-numbers --syntax-theme="Catppuccin Mocha" --minus-style="syntax #43242B" --plus-style="syntax #2B3328" --minus-emph-style="syntax bold #6D2E33" --plus-emph-style="syntax bold #405034" --line-numbers-minus-style="bold #E46876" --line-numbers-plus-style="bold #98BB6C" --hunk-header-style="file line-number syntax"'
 gui:
   theme:
     activeBorderColor:
