@@ -1,3 +1,17 @@
+-- Mittlere Sektion transparent, damit links und rechts zwei Kapseln schweben
+-- statt eines durchgehenden Balkens. Die Farben kommen aus dem aktiven
+-- Colorscheme, damit der Theme-Switcher die Statusline mitnimmt.
+local function bubbles_theme()
+  package.loaded["lualine.themes.auto"] = nil
+  local theme = vim.deepcopy(require("lualine.themes.auto"))
+  for _, mode in pairs(theme) do
+    if mode.c then
+      mode.c.bg = "none"
+    end
+  end
+  return theme
+end
+
 return {
   -- Colorscheme
   {
@@ -5,20 +19,7 @@ return {
     priority = 1000,
     lazy = false,
     opts = {
-      transparent = true, -- Ghostty background-opacity
       theme = "wave",
-      colors = {
-        theme = { all = { ui = { bg_gutter = "none", float = { bg = "none" } } } },
-      },
-      overrides = function(colors)
-        local theme = colors.theme
-        return {
-          -- Floats transparent, aber Rand dezent sichtbar
-          FloatBorder = { fg = theme.ui.nontext, bg = "none" },
-          -- Pmenu (Completion) dunkel-transparent statt kräftigem Panel
-          Pmenu = { bg = theme.ui.bg_p1, blend = 15 },
-        }
-      end,
     },
     config = function(_, opts)
       require("kanagawa").setup(opts)
@@ -26,49 +27,51 @@ return {
     end,
   },
 
-  -- Statusline (Bubble-Style)
+  -- Statusline
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = function()
-      -- Mittlere Sektion (lualine_c) transparent, damit die Bubble-Optik
-      -- nur an den Rändern sichtbar ist
-      local theme = require("lualine.themes.kanagawa")
-      for _, mode in pairs(theme) do
-        if mode.c then
-          mode.c.bg = "none"
-        end
-      end
       return {
         options = {
-          theme = theme,
+          theme = bubbles_theme(),
           globalstatus = true,
           component_separators = "",
-          -- Powerline-Pfeile statt runder Kappen
-          section_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
         },
         sections = {
           lualine_a = {
-            { "mode", icon = "" },
+            { "mode", icon = "", separator = { left = "" }, right_padding = 2 },
           },
           lualine_b = {
-            { "branch", icon = "" },
-            { "diff", symbols = { added = " ", modified = " ", removed = " " } },
+            { "branch", icon = "" },
+            { "diff", symbols = { added = " ", modified = " ", removed = " " } },
           },
           lualine_c = {
             { "filetype", icon_only = true, padding = { left = 1, right = 0 } },
-            { "filename", symbols = { modified = "●", readonly = "", unnamed = "" } },
+            { "filename", symbols = { modified = "[+]", readonly = " ", unnamed = "[kein Name]" } },
           },
           lualine_x = {
-            { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
+            { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
+            "encoding",
+            "filetype",
           },
           lualine_y = { "lsp_status", "progress" },
           lualine_z = {
-            { "location", icon = "" },
+            { "location", separator = { right = "" }, left_padding = 2 },
           },
         },
       }
+    end,
+    config = function(_, opts)
+      local lualine = require("lualine")
+      lualine.setup(opts)
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = function()
+          lualine.setup({ options = { theme = bubbles_theme() } })
+        end,
+      })
     end,
   },
 
@@ -82,6 +85,8 @@ return {
         { "<leader>f", group = "find" },
         { "<leader>o", group = "obsidian" },
         { "<leader>g", group = "git" },
+        { "<leader>cr", group = "coderabbit" },
+        { "<leader>u", group = "ui" },
       },
     },
   },
