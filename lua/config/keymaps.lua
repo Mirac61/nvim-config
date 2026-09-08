@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local documents = require("config.documents")
 
 -- Standard
 map("n", ";", ":", { desc = "Command mode" })
@@ -65,25 +66,15 @@ end, { desc = "Git: main + fetch + pull" })
 -- Java / JavaFX
 map("n", "<leader>jr", "<cmd>split | term ./mvnw -q javafx:run<cr>", { desc = "JavaFX App starten" })
 
--- LaTeX
-map(
-	"n",
-	"<leader>lb",
-	"<cmd>split | term cd %:p:h && pdflatex %:t<cr>",
-	{ desc = "LaTeX Build" }
-)
+-- Dokumente (LaTeX/Typst/PDF): kompilieren und extern öffnen
+map("n", "<leader>do", documents.open_pdf, { desc = "Open PDF (kompilieren + extern)" })
+map("n", "<leader>dc", documents.compile, { desc = "Nur kompilieren" })
+map("n", "<leader>dp", documents.pick_pdf, { desc = "PDF-Palette" })
 
--- Second Brain (Obsidian)
-map("n", "<leader>on", "<cmd>Obsidian new<cr>", { desc = "New Note" })
-map("n", "<leader>od", "<cmd>Obsidian today<cr>", { desc = "Daily Note" })
-map("n", "<leader>os", "<cmd>Obsidian search<cr>", { desc = "Search Notes" })
-map("n", "<leader>ob", "<cmd>Obsidian backlinks<cr>", { desc = "Backlinks" })
-map("n", "<leader>ol", "<cmd>Obsidian links<cr>", { desc = "Links" })
-map("n", "<leader>ot", "<cmd>Obsidian template<cr>", { desc = "Insert Template" })
-map("n", "<leader>op", "<cmd>Obsidian quick_switch<cr>", { desc = "Quick Switch" })
-map("n", "<leader>oo", "<cmd>Obsidian open<cr>", { desc = "Open in Obsidian App" })
-map("n", "<leader>ox", "<cmd>Obsidian toggle_checkbox<cr>", { desc = "Toggle Checkbox" })
-map("n", "<leader>of", "<cmd>Obsidian follow_link<cr>", { desc = "Follow Link" })
+-- Markdown
+map("n", "<leader>mf", function()
+	vim.system({ "open", "-a", "FluxMarkdown", vim.fn.expand("%:p") })
+end, { desc = "In FluxMarkdown öffnen" })
 
 -- Buffer manuell formatieren (z.B. Markdown-Tabellen via prettier ausrichten)
 map({ "n", "v" }, "<leader>cf", function()

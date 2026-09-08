@@ -47,6 +47,20 @@ return {
 ███    ███   ███    ███   ███    ███ ███▌    ▄   ███    ███    ▄█    ███     ███     ███    ███    ███
 ████████▀    ███    █▀    ██████████ █████▄▄██   ██████████  ▄████████▀     ▄████▀   █▀     ███    █▀]],
 				},
+				sections = {
+					{ section = "header" },
+					{
+						text = {
+							{ "  " .. os.date("%H:%M"), hl = "special" },
+							{ "    " .. os.date("%a, %d. %b %Y"), hl = "footer" },
+						},
+						align = "center",
+						padding = 1,
+					},
+					{ section = "keys", gap = 1, padding = 1 },
+					{ section = "recent_files", title = "Recent", padding = 1 },
+					{ section = "startup" },
+				},
 			},
 		},
 	},

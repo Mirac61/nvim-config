@@ -1,6 +1,6 @@
 return {
--- Markdown-Rendering im Buffer
-{
+  -- Markdown-Rendering im Buffer
+  {
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown" },
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
@@ -97,20 +97,18 @@ return {
     },
   },
 
-  -- Browser-Vorschau
+  -- Live-Vorschau in Webview/Browser (toppair/peek.nvim)
   {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
-    ft = { "markdown" },
-    build = function()
-      vim.fn["mkdp#util#install"]()
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup({
+        theme = "dark",
+        app = "webview",
+      })
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
     end,
-    init = function()
-      vim.g.mkdp_auto_close = 0
-      vim.g.mkdp_theme = "dark"
-    end,
-    keys = {
-      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview Toggle", ft = "markdown" },
-    },
   },
 }

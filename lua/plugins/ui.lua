@@ -1,15 +1,8 @@
--- Mittlere Sektion transparent, damit links und rechts zwei Kapseln schweben
--- statt eines durchgehenden Balkens. Die Farben kommen aus dem aktiven
--- Colorscheme, damit der Theme-Switcher die Statusline mitnimmt.
+-- Die Farben kommen aus dem aktiven Colorscheme, damit der Theme-Switcher die
+-- Statusline mitnimmt.
 local function bubbles_theme()
   package.loaded["lualine.themes.auto"] = nil
-  local theme = vim.deepcopy(require("lualine.themes.auto"))
-  for _, mode in pairs(theme) do
-    if mode.c then
-      mode.c.bg = "none"
-    end
-  end
-  return theme
+  return vim.deepcopy(require("lualine.themes.auto"))
 end
 
 return {
@@ -71,7 +64,7 @@ return {
       preset = "helix",
       spec = {
         { "<leader>f", group = "find" },
-        { "<leader>o", group = "obsidian" },
+        { "<leader>d", group = "Dokumente" },
         { "<leader>g", group = "git" },
         { "<leader>cr", group = "coderabbit" },
         { "<leader>u", group = "ui" },
@@ -88,25 +81,10 @@ return {
       lsp = {
         progress = { enabled = true },
       },
+      cmdline = { enabled = false },
+      messages = { enabled = false },
       presets = {
-        command_palette = true,
         lsp_doc_border = true,
-      },
-      routes = {
-        -- Nur Routine-Rauschen ausblenden ("3 Zeilen geschrieben", Suche umgebrochen);
-        -- Fehler und alle anderen Meldungen bleiben sichtbar
-        {
-          filter = {
-            event = "msg_show",
-            any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
-              { find = "written" },
-            },
-          },
-          opts = { skip = true },
-        },
       },
     },
   },

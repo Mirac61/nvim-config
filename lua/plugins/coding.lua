@@ -28,6 +28,7 @@ return {
 				"toml",
 				"json",
 				"bash",
+				"templ",
 			}
 			require("nvim-treesitter").install(parsers)
 

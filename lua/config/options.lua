@@ -40,4 +40,4 @@ require("config.remote_clipboard").setup()
 o.conceallevel = 2
 
 -- Vermeide "hit-enter"-Prompts
-o.shortmess:append("cI")
+o.shortmess:append("cIW")
