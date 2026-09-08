@@ -40,14 +40,17 @@ map("n", "<leader>fc", function()
 end, { desc = "Nvim-Config" })
 
 -- Terminal (Snacks, ersetzt nvchad.term)
+-- fish statt $SHELL (bash), damit der Prompt wie in foot aussieht (starship,
+-- Farben). vim.o.shell bleibt bash, damit :! / system() POSIX-kompatibel sind.
+local termshell = vim.fn.executable("fish") == 1 and "fish" or nil
 map({ "n", "t" }, "<leader>h", function()
-	Snacks.terminal(nil, { win = { position = "bottom", height = 0.3 } })
+	Snacks.terminal(termshell, { win = { position = "bottom", height = 0.3 } })
 end, { desc = "Terminal Horizontal" })
 map({ "n", "t" }, "<leader>v", function()
-	Snacks.terminal(nil, { win = { position = "right", width = 0.4 } })
+	Snacks.terminal(termshell, { win = { position = "right", width = 0.4 } })
 end, { desc = "Terminal Vertikal" })
 map({ "n", "t" }, "<leader>pt", function()
-	Snacks.terminal(nil, { win = { position = "float" } })
+	Snacks.terminal(termshell, { win = { position = "float" } })
 end, { desc = "Terminal Floating" })
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Terminal-Modus verlassen" })
 
@@ -66,8 +69,8 @@ map("n", "<leader>jr", "<cmd>split | term ./mvnw -q javafx:run<cr>", { desc = "J
 map(
 	"n",
 	"<leader>lb",
-	"<cmd>split | term cd %:p:h && pdflatex %:t && open -a Skim %:t:r.pdf<cr>",
-	{ desc = "LaTeX Build + Skim" }
+	"<cmd>split | term cd %:p:h && pdflatex %:t<cr>",
+	{ desc = "LaTeX Build" }
 )
 
 -- Second Brain (Obsidian)

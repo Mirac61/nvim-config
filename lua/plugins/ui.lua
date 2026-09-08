@@ -13,19 +13,7 @@ local function bubbles_theme()
 end
 
 return {
-  -- Colorscheme
-  {
-    "rebelot/kanagawa.nvim",
-    priority = 1000,
-    lazy = false,
-    opts = {
-      theme = "wave",
-    },
-    config = function(_, opts)
-      require("kanagawa").setup(opts)
-      vim.cmd.colorscheme("kanagawa")
-    end,
-  },
+  -- Colorscheme wird von plugins/caelestia.lua gesetzt (folgt dem Desktop-Theme).
 
   -- Statusline
   {

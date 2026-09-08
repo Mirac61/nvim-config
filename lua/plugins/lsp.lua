@@ -23,6 +23,8 @@ return {
 				"prettier",
 				"tree-sitter-cli", -- zum Kompilieren der Treesitter-Parser
 				"sqls",
+				"templ",
+				"htmx-lsp",
 			}
 			local registry = require("mason-registry")
 			registry.refresh(function()
@@ -56,6 +58,8 @@ return {
 				"lua_ls",
 				"marksman",
 				"sqls",
+				"templ",
+				"htmx",
 			})
 		end,
 	},

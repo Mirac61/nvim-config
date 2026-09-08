@@ -34,6 +34,8 @@ o.smartcase = true
 -- Clipboard (System)
 o.clipboard = "unnamedplus"
 
+require("config.remote_clipboard").setup()
+
 -- Obsidian/Markdown: Links etc. concealen
 o.conceallevel = 2
 

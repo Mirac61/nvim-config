@@ -1,40 +1,6 @@
 return {
-  -- Obsidian (Community-Fork, epwalsh ist unmaintained)
-  {
-    "obsidian-nvim/obsidian.nvim",
-    version = "*",
-    ft = "markdown",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {
-      legacy_commands = false,
-      workspaces = {
-        {
-          name = "noteking",
-          path = "/Users/mirac/Library/Mobile Documents/iCloud~md~obsidian/Documents/NoteKingVault",
-          overrides = {
-            templates = { folder = "Templates" },
-            daily_notes = { folder = "daily", date_format = "%Y-%m-%d", template = nil },
-          },
-        },
-        {
-          name = "brain",
-          path = "/Users/mirac/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes",
-          overrides = {
-            templates = { folder = "templates" },
-            daily_notes = { folder = "daily", date_format = "%Y-%m-%d", template = "daily-template.md" },
-          },
-        },
-      },
-      templates = {
-        date_format = "%Y-%m-%d",
-        time_format = "%H:%M",
-      },
-      ui = { enable = false }, -- render-markdown übernimmt das Rendering
-    },
-  },
-
-  -- Markdown-Rendering im Buffer
-  {
+-- Markdown-Rendering im Buffer
+{
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown" },
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
@@ -67,32 +33,54 @@ return {
     },
     config = function(_, opts)
       require("render-markdown").setup(opts)
-      -- Transparente Hintergründe (Ghostty background-opacity)
-      local highlights = {
-        "RenderMarkdownH1Bg", "RenderMarkdownH2Bg", "RenderMarkdownH3Bg",
-        "RenderMarkdownH4Bg", "RenderMarkdownH5Bg", "RenderMarkdownH6Bg",
-        "RenderMarkdownCode", "RenderMarkdownCodeInline",
-      }
-      for _, hl in ipairs(highlights) do
-        vim.api.nvim_set_hl(0, hl, { bg = "none" })
+
+      -- Heading-Farben aus caelestias scheme.json (term1..6), bg bleibt none.
+      -- Fallback: die alten Kanagawa-Werte, falls die Datei fehlt.
+      local function caelestia_palette()
+        local state = vim.env.XDG_STATE_HOME or (vim.env.HOME .. "/.local/state")
+        local f = io.open(state .. "/caelestia/scheme.json", "r")
+        if not f then return {} end
+        local raw = f:read("*a")
+        f:close()
+        local ok, data = pcall(vim.json.decode, raw)
+        local cols = ok and type(data) == "table" and data.colours or {}
+        local out = {}
+        for k, v in pairs(cols) do
+          if type(v) == "string" and v:match("^%x%x%x%x%x%x$") then out[k] = "#" .. v end
+        end
+        return out
       end
 
-      -- Heading-Farben (Kanagawa-Palette), bg bleibt none
-      local ok, kanagawa_colors = pcall(function()
-        return require("kanagawa.colors").setup().palette
-      end)
-      local palette = ok and kanagawa_colors or {}
-      local heading_fg = {
-        RenderMarkdownH1 = palette.surimiOrange or "#ffa066",
-        RenderMarkdownH2 = palette.crystalBlue or "#7e9cd8",
-        RenderMarkdownH3 = palette.springGreen or "#98bb6c",
-        RenderMarkdownH4 = palette.carpYellow or "#e6c384",
-        RenderMarkdownH5 = palette.oniViolet or "#957fb8",
-        RenderMarkdownH6 = palette.waveAqua2 or "#7aa89f",
-      }
-      for hl, fg in pairs(heading_fg) do
-        vim.api.nvim_set_hl(0, hl, { fg = fg, bg = "none" })
+      -- caelestia sendet nach jedem Theme-Wechsel ein ColorScheme-Event und
+      -- render-markdown re-linkt dabei seine Gruppen -- daher hier erneut setzen.
+      local function apply_hl()
+        for _, hl in ipairs({
+          "RenderMarkdownH1Bg", "RenderMarkdownH2Bg", "RenderMarkdownH3Bg",
+          "RenderMarkdownH4Bg", "RenderMarkdownH5Bg", "RenderMarkdownH6Bg",
+          "RenderMarkdownCode", "RenderMarkdownCodeInline",
+        }) do
+          vim.api.nvim_set_hl(0, hl, { bg = "none" })
+        end
+
+        local p = caelestia_palette()
+        local heading_fg = {
+          RenderMarkdownH1 = p.term1 or "#ffa066",
+          RenderMarkdownH2 = p.term2 or "#7e9cd8",
+          RenderMarkdownH3 = p.term3 or "#98bb6c",
+          RenderMarkdownH4 = p.term4 or "#e6c384",
+          RenderMarkdownH5 = p.term5 or "#957fb8",
+          RenderMarkdownH6 = p.term6 or "#7aa89f",
+        }
+        for hl, fg in pairs(heading_fg) do
+          vim.api.nvim_set_hl(0, hl, { fg = fg, bg = "none" })
+        end
       end
+
+      apply_hl()
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("markdown_heading_colors", { clear = true }),
+        callback = vim.schedule_wrap(apply_hl),
+      })
     end,
   },
 
