@@ -9,7 +9,16 @@ local themes = {
 }
 
 local variants = { "wave", "dragon", "lotus" }
-local default = "kanagawa-dragon"
+
+-- caelestia baut seine Palette aus ~/.local/state/caelestia/scheme.json und folgt
+-- damit dem Desktop-Theme. Ohne die Datei -- also ueberall ausser auf dem Arch-
+-- Laptop -- bliebe nvim ungestylt, deshalb dort kanagawa als Start-Theme.
+local function caelestia_bereit()
+  local state = vim.env.XDG_STATE_HOME or (vim.env.HOME .. "/.local/state")
+  return vim.fn.filereadable(state .. "/caelestia/scheme.json") == 1
+end
+
+local default = caelestia_bereit() and "caelestia" or "kanagawa-dragon"
 
 local statefile = vim.fn.stdpath("state") .. "/colorscheme"
 

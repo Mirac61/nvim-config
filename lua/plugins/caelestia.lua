@@ -11,9 +11,9 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      -- Apply now for a themed first frame ...
-      pcall(vim.cmd.colorscheme, "caelestia")
-      -- ... and again once plugins shipping highlight groups have loaded.
+      -- Welches Theme startet, entscheidet plugins/colorschemes.lua (statefile).
+      -- Hier nur nachziehen, sobald Plugins mit eigenen Highlight-Gruppen geladen
+      -- sind -- sonst ueberschreiben die caelestias Farben.
       vim.api.nvim_create_autocmd("VimEnter", {
         once = true,
         group = vim.api.nvim_create_augroup("caelestia_colorscheme", { clear = true }),
