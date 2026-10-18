@@ -63,9 +63,6 @@ map("n", "<leader>gm", function()
 	print(vim.fn.system("git checkout main && git fetch && git pull"))
 end, { desc = "Git: main + fetch + pull" })
 
--- Java / JavaFX
-map("n", "<leader>jr", "<cmd>split | term ./mvnw -q javafx:run<cr>", { desc = "JavaFX App starten" })
-
 -- Dokumente (LaTeX/Typst/PDF): kompilieren und extern öffnen
 map("n", "<leader>do", documents.open_pdf, { desc = "Open PDF (kompilieren + extern)" })
 map("n", "<leader>dc", documents.compile, { desc = "Nur kompilieren" })
@@ -81,21 +78,7 @@ map({ "n", "v" }, "<leader>cf", function()
 	require("conform").format({ lsp_format = "fallback" })
 end, { desc = "Format Buffer" })
 
--- LSP
-map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
-map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename" })
-map("n", "gd", function()
-	Snacks.picker.lsp_definitions()
-end, { desc = "Goto Definition" })
-map("n", "gr", function()
-	Snacks.picker.lsp_references()
-end, { desc = "References" })
-map("n", "<leader>ds", function()
-	Snacks.picker.lsp_symbols()
-end, { desc = "Document Symbols" })
-map("n", "<leader>ws", function()
-	Snacks.picker.lsp_workspace_symbols()
-end, { desc = "Workspace Symbols" })
+-- Diagnostics (LSP-Keymaps stehen in config/autocmds.lua, nur mit aktivem LSP)
 map("n", "<leader>fd", function()
 	Snacks.picker.diagnostics()
 end, { desc = "Diagnostics" })
