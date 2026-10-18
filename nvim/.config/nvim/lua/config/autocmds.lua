@@ -34,6 +34,22 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
+-- LSP-Keymaps nur in Buffern, an die ein Server angehängt ist
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = aug,
+  callback = function(ev)
+    local function map(lhs, rhs, desc)
+      vim.keymap.set("n", lhs, rhs, { buffer = ev.buf, desc = desc })
+    end
+    map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+    map("<leader>rn", vim.lsp.buf.rename, "Rename")
+    map("gd", function() Snacks.picker.lsp_definitions() end, "Goto Definition")
+    map("gr", function() Snacks.picker.lsp_references() end, "References")
+    map("<leader>ds", function() Snacks.picker.lsp_symbols() end, "Document Symbols")
+    map("<leader>ws", function() Snacks.picker.lsp_workspace_symbols() end, "Workspace Symbols")
+  end,
+})
+
 -- Markdown: kein Umbruch (breite Tabellen bleiben Tabellen), Umbruch mit <leader>uw togglebar
 vim.api.nvim_create_autocmd("FileType", {
   group = aug,
