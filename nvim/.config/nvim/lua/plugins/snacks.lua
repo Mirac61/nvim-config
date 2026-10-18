@@ -5,6 +5,7 @@ return {
 		lazy = false,
 		---@type snacks.Config
 		opts = {
+			terminal = { enabled = false },
 			bigfile = { enabled = true },
 			quickfile = { enabled = true },
 			notifier = { enabled = true, timeout = 3000 },

@@ -6,6 +6,7 @@ local themes = {
   { "rose-pine/neovim", name = "rose-pine" },
   { "EdenEast/nightfox.nvim" },
   { "sainnhe/everforest" },
+  { "tiesen243/vercel.nvim", opts = { theme = "dark" } },
 }
 
 local variants = { "wave", "dragon", "lotus" }
@@ -58,51 +59,6 @@ local function apply(name)
   end
 end
 
--- tmux bekommt die Farben des aktiven Themes, das Layout bleibt in ~/.tmux.conf.
-local function hex(group, attr)
-  local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
-  return hl[attr] and ("#%06x"):format(hl[attr]) or nil
-end
-
-local function sync_tmux()
-  if not vim.env.TMUX or vim.fn.executable("tmux") == 0 then
-    return
-  end
-
-  local fg = hex("Normal", "fg") or "#C5C9C5"
-  local ink = hex("Normal", "bg") or "#181616"
-  local bar = hex("StatusLine", "bg") or "#0D0C0C"
-  local dim = hex("Comment", "fg") or "#737C73"
-  local gray = hex("Visual", "bg") or "#223249"
-  local blue = hex("Function", "fg") or "#8BA4B0"
-  local red = hex("DiagnosticError", "fg") or "#FF5D62"
-
-  local options = {
-    ["@bar"] = bar,
-    ["@fg"] = fg,
-    ["@dim"] = dim,
-    ["@ink"] = ink,
-    ["@gray"] = gray,
-    ["@blue"] = blue,
-    ["status-style"] = ("bg=%s,fg=%s"):format(bar, dim),
-    ["message-style"] = ("bg=%s,fg=%s"):format(gray, fg),
-    ["mode-style"] = ("bg=%s,fg=%s"):format(gray, fg),
-    ["pane-border-style"] = "fg=" .. gray,
-    ["pane-active-border-style"] = "fg=" .. blue,
-    ["window-status-bell-style"] = "fg=" .. red .. ",bold",
-  }
-
-  local cmd = { "tmux" }
-  for name, value in pairs(options) do
-    if #cmd > 1 then
-      table.insert(cmd, ";")
-    end
-    vim.list_extend(cmd, { "set", "-g", name, value })
-  end
-  vim.list_extend(cmd, { ";", "refresh-client", "-S" })
-  vim.system(cmd)
-end
-
 -- Namen aus `ghostty +list-themes`. Ohne Eintrag bleibt das Terminal, wie es ist.
 local ghostty_themes = {
   ["kanagawa-wave"] = "Kanagawa Wave",
@@ -113,6 +69,7 @@ local ghostty_themes = {
   ["rose-pine"] = "Rose Pine",
   nightfox = "Nightfox",
   everforest = "Everforest Dark Hard",
+  vercel = "Vercel",
 }
 
 local function sync_ghostty()
@@ -138,7 +95,6 @@ end
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
-    sync_tmux()
     sync_ghostty()
   end,
 })
@@ -151,6 +107,27 @@ table.insert(spec, {
   lazy = false,
   opts = {
     background = { dark = "dragon", light = "lotus" },
+    colors = {
+      palette = {
+        -- dragon-Hintergrund Richtung Vercel: kuehles, tiefes Schwarz
+        -- statt der warmen dragonBlack-Toene (Zinc-Skala wie bei Vercel).
+        dragonBlack0 = "#050506",
+        dragonBlack1 = "#060608",
+        dragonBlack2 = "#0f0f12",
+        dragonBlack3 = "#09090b",
+        dragonBlack4 = "#18181b",
+        dragonBlack5 = "#27272a",
+        dragonBlack6 = "#52525b",
+      },
+      theme = {
+        dragon = {
+          syn = {
+            -- edleres Jade-Gruen fuer Strings statt dragonGreen2
+            string = "#87b89e",
+          },
+        },
+      },
+    },
   },
   config = function(_, opts)
     require("kanagawa").setup(opts)
