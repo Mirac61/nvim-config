@@ -1,3 +1,12 @@
+local system = vim.uv.os_uname().sysname
+local platform = {
+	Darwin = { icon = "", name = "macOS" },
+	Linux = { icon = "", name = "Linux" },
+	Windows_NT = { icon = "󰍲", name = "Windows" },
+}
+local platform_info = platform[system] or { icon = "󰘧", name = system }
+local dashboard_header = ("%s    Neovim · %s"):format(platform_info.icon, platform_info.name)
+
 return {
 	{
 		"folke/snacks.nvim",
@@ -38,15 +47,7 @@ return {
 			dashboard = {
 				width = 110,
 				preset = {
-					header = [[
- ▄████████    ▄████████    ▄████████  ▄█          ▄████████    ▄████████     ███      ▄█     ▄████████
-███    ███   ███    ███   ███    ███ ███         ███    ███   ███    ███ ▀█████████▄ ███    ███    ███
-███    █▀    ███    ███   ███    █▀  ███         ███    █▀    ███    █▀     ▀███▀▀██ ███▌   ███    ███
-███          ███    ███  ▄███▄▄▄     ███        ▄███▄▄▄       ███            ███   ▀ ███▌   ███    ███
-███        ▀███████████ ▀▀███▀▀▀     ███       ▀▀███▀▀▀     ▀███████████     ███     ███▌ ▀███████████
-███    █▄    ███    ███   ███    █▄  ███         ███    █▄           ███     ███     ███    ███    ███
-███    ███   ███    ███   ███    ███ ███▌    ▄   ███    ███    ▄█    ███     ███     ███    ███    ███
-████████▀    ███    █▀    ██████████ █████▄▄██   ██████████  ▄████████▀     ▄████▀   █▀     ███    █▀]],
+					header = dashboard_header,
 				},
 				sections = {
 					{ section = "header" },

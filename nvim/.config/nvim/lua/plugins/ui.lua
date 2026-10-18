@@ -18,12 +18,13 @@ return {
         options = {
           theme = bubbles_theme(),
           globalstatus = true,
-          component_separators = "",
-          section_separators = { left = "", right = "" },
+          -- The same powerline segment shape as tmux-ukiyo.
+          component_separators = { left = "", right = "" },
+          section_separators = { left = "", right = "" },
         },
         sections = {
           lualine_a = {
-            { "mode", icon = "", separator = { left = "" }, right_padding = 2 },
+            { "mode", icon = "", right_padding = 2 },
           },
           lualine_b = {
             { "branch", icon = "" },
@@ -36,11 +37,10 @@ return {
           lualine_x = {
             { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
             "encoding",
-            "filetype",
           },
           lualine_y = { "lsp_status", "progress" },
           lualine_z = {
-            { "location", separator = { right = "" }, left_padding = 2 },
+            { "location", left_padding = 2 },
           },
         },
       }

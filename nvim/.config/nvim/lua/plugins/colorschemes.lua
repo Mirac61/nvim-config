@@ -2,11 +2,12 @@
 -- setup() laeuft erst, wenn eines wirklich aktiv wird.
 local themes = {
   { "folke/tokyonight.nvim" },
-  { "catppuccin/nvim", name = "catppuccin" },
   { "rose-pine/neovim", name = "rose-pine" },
   { "EdenEast/nightfox.nvim" },
   { "sainnhe/everforest" },
   { "tiesen243/vercel.nvim", opts = { theme = "dark" } },
+  { "shaunsingh/nord.nvim" },
+  { "ellisonleao/gruvbox.nvim", opts = {} },
 }
 
 local variants = { "wave", "dragon", "lotus" }
@@ -65,11 +66,12 @@ local ghostty_themes = {
   ["kanagawa-dragon"] = "Kanagawa Dragon",
   ["kanagawa-lotus"] = "Kanagawa Lotus",
   tokyonight = "TokyoNight",
-  catppuccin = "Catppuccin Mocha",
   ["rose-pine"] = "Rose Pine",
   nightfox = "Nightfox",
   everforest = "Everforest Dark Hard",
   vercel = "Vercel",
+  nord = "Nord",
+  gruvbox = "Gruvbox Dark",
 }
 
 local function sync_ghostty()
@@ -93,9 +95,43 @@ local function sync_ghostty()
   vim.system({ "pkill", "-USR2", "-x", "ghostty" })
 end
 
+-- These are the only palettes offered by <leader>ut. Keep tmux-ukiyo on the
+-- same palette when Neovim changes colorscheme; unsupported schemes are never
+-- exposed in that picker and therefore cannot leave the bars out of sync.
+local tmux_themes = {
+  vercel = "vercel",
+  ["kanagawa-dragon"] = "kanagawa/dragon",
+  ["kanagawa-wave"] = "kanagawa/wave",
+  ["kanagawa-lotus"] = "kanagawa/lotus",
+  ["tokyonight-night"] = "tokyonight/night",
+  nord = "nord/default",
+  gruvbox = "gruvbox/dark",
+}
+
+local function sync_tmux()
+  if not vim.env.TMUX or vim.fn.executable("tmux") == 0 then
+    return
+  end
+
+  local theme = tmux_themes[active() or ""]
+  local switcher = vim.fn.expand("~/.config/tmux/switch-theme.sh")
+  if not theme or vim.fn.executable(switcher) == 0 then
+    return
+  end
+
+  vim.system({ switcher, theme }, { text = true }, function(result)
+    if result.code ~= 0 then
+      vim.schedule(function()
+        vim.notify(result.stderr or "tmux-ukiyo konnte das Theme nicht wechseln", vim.log.levels.ERROR)
+      end)
+    end
+  end)
+end
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
     sync_ghostty()
+    sync_tmux()
   end,
 })
 
@@ -141,19 +177,25 @@ table.insert(spec, {
     {
       "<leader>ut",
       function()
-        Snacks.picker.colorschemes({
-          confirm = function(picker, item)
-            picker.preview.state.colorscheme = nil
-            picker:close()
-            if item then
-              vim.schedule(function()
-                apply(item.text)
-              end)
-            end
+        local choices = {
+          { label = "Vercel", colorscheme = "vercel" },
+          { label = "Kanagawa Dragon", colorscheme = "kanagawa-dragon" },
+          { label = "Tokyo Night", colorscheme = "tokyonight-night" },
+          { label = "Nord", colorscheme = "nord" },
+          { label = "Gruvbox Dark", colorscheme = "gruvbox" },
+        }
+        vim.ui.select(choices, {
+          prompt = "Theme (tmux-kompatibel)",
+          format_item = function(choice)
+            return choice.label
           end,
-        })
+        }, function(choice)
+          if choice then
+            apply(choice.colorscheme)
+          end
+        end)
       end,
-      desc = "Theme wechseln",
+      desc = "Theme wechseln (tmux-kompatibel)",
     },
     {
       "<leader>uk",
