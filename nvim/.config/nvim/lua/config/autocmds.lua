@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "BufLeave", "FocusLost" }, {
   end,
 })
 
--- Kurz highlighten, was gerade gey ankt wurde
+-- Kurz highlighten, was gerade kopiert wurde
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = aug,
   callback = function()
