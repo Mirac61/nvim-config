@@ -12,9 +12,16 @@ o.splitbelow = true
 o.splitright = true
 o.scrolloff = 8
 o.pumheight = 12
-o.winborder = "rounded"
+-- Neovide-only: im Terminal existiert "winborder" nicht
+if vim.g.neovide then
+  o.winborder = "rounded"
+end
 o.fillchars = { eob = " ", vert = "│", fold = " " }
 o.cursorlineopt = "number"
+
+-- Fenstertitel (Neovide): Dateiname, sonst "Neovim" statt "[Scratch]"
+o.title = true
+o.titlestring = [[%{expand('%:t') != '' ? expand('%:t') : 'Neovim'}]]
 
 -- Editing
 o.expandtab = true

@@ -28,24 +28,9 @@ return {
 				"toml",
 				"json",
 				"bash",
-				"templ",
 			}
+			-- Highlighting/Indent laufen auf nvim 0.12 automatisch -- hier nur Parser sicherstellen
 			require("nvim-treesitter").install(parsers)
-
-			vim.api.nvim_create_autocmd("FileType", {
-				group = vim.api.nvim_create_augroup("user_treesitter", { clear = true }),
-				callback = function(ev)
-					-- vimtex macht bei tex sein eigenes Highlighting
-					if ev.match == "tex" then
-						return
-					end
-					local lang = vim.treesitter.language.get_lang(ev.match)
-					if lang and vim.treesitter.language.add(lang) then
-						vim.treesitter.start(ev.buf, lang)
-						vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-					end
-				end,
-			})
 		end,
 	},
 

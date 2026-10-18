@@ -54,6 +54,17 @@ local groups = {
 	"NotifyDEBUGBorder",
 }
 
-for _, name in ipairs(groups) do
-	make_transparent(name)
+-- Re-applied on every ColorScheme: switching themes resets the highlight groups,
+-- and only caelestia keeps its own transparency. schedule_wrap runs after the
+-- colorscheme has finished applying its highlights.
+local function apply()
+	for _, name in ipairs(groups) do
+		make_transparent(name)
+	end
 end
+
+apply()
+vim.api.nvim_create_autocmd("ColorScheme", {
+	group = vim.api.nvim_create_augroup("transparency", { clear = true }),
+	callback = vim.schedule_wrap(apply),
+})

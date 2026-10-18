@@ -40,20 +40,20 @@ map("n", "<leader>fc", function()
 	Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "Nvim-Config" })
 
--- Terminal (Snacks, ersetzt nvchad.term)
--- fish statt $SHELL (bash), damit der Prompt wie in foot aussieht (starship,
--- Farben). vim.o.shell bleibt bash, damit :! / system() POSIX-kompatibel sind.
-local termshell = vim.fn.executable("fish") == 1 and "fish" or nil
-map({ "n", "t" }, "<leader>h", function()
-	Snacks.terminal(termshell, { win = { position = "bottom", height = 0.3 } })
-end, { desc = "Terminal Horizontal" })
-map({ "n", "t" }, "<leader>v", function()
-	Snacks.terminal(termshell, { win = { position = "right", width = 0.4 } })
-end, { desc = "Terminal Vertikal" })
-map({ "n", "t" }, "<leader>pt", function()
-	Snacks.terminal(termshell, { win = { position = "float" } })
-end, { desc = "Terminal Floating" })
-map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Terminal-Modus verlassen" })
+function _G.set_terminal_keymaps()
+	local opts = { buffer = 0 }
+	-- Drücke <Esc> im Terminal, um in den Normal-Mode des Terminals zu wechseln
+	vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], opts)
+
+	-- Ermöglicht Fenster-Navigation direkt aus dem Terminal-Modus
+	vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], opts)
+	vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], opts)
+	vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], opts)
+	vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
+end
+
+-- Wendet die Keymaps automatisch an, sobald ein Toggleterm-Fenster öffnet
+vim.cmd("autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()")
 
 -- Git
 map("n", "<leader>gg", function()

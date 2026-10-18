@@ -6,7 +6,7 @@ return {
 			{ "mason-org/mason.nvim", opts = {} },
 		},
 		config = function()
-			-- Formatter/Tools über mason nachinstallieren (einmalig)
+			-- Formatter/Tools, die ":LspEnsure" bei Bedarf über Mason installiert
 			local ensure_tools = {
 				"gopls",
 				"jdtls",
@@ -26,15 +26,19 @@ return {
 				"templ",
 				"htmx-lsp",
 			}
-			local registry = require("mason-registry")
-			registry.refresh(function()
-				for _, name in ipairs(ensure_tools) do
-					local ok, pkg = pcall(registry.get_package, name)
-					if ok and not pkg:is_installed() then
-						pkg:install()
+			-- Nur auf Anforderung (:LspEnsure) installieren -- ein Registry-Refresh
+			-- bei jedem Start kostet einen Netzwerk-Roundtrip.
+			vim.api.nvim_create_user_command("LspEnsure", function()
+				local registry = require("mason-registry")
+				registry.refresh(function()
+					for _, name in ipairs(ensure_tools) do
+						local ok, pkg = pcall(registry.get_package, name)
+						if ok and not pkg:is_installed() then
+							pkg:install()
+						end
 					end
-				end
-			end)
+				end)
+			end, { desc = "Fehlende LSP-/Formatter-Tools via Mason installieren" })
 
 			vim.diagnostic.config({
 				virtual_text = { spacing = 2 },
