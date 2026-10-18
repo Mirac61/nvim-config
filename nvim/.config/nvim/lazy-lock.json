@@ -32,6 +32,7 @@
   "tokyonight.nvim": { "branch": "main", "commit": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6" },
   "vercel.nvim": { "branch": "main", "commit": "a3ecfbb8ef74218fe9c3aad29a148d51d37fcb1c" },
   "vim-table-mode": { "branch": "master", "commit": "bb025308a45c67c7c8f0763ba37bc2ee3f534df0" },
+  "vim-tmux-navigator": { "branch": "master", "commit": "e41c431a0c7b7388ae7ba341f01a0d217eb3a432" },
   "vimtex": { "branch": "master", "commit": "79a5fb444147f94a5284b6800030e17eecd18a06" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" },
   "yazi.nvim": { "branch": "main", "commit": "9910c5455c09706f0156ac926270f2bd179f5e9d" }

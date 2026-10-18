@@ -6,11 +6,7 @@ map("n", ";", ":", { desc = "Command mode" })
 map("i", "jk", "<ESC>")
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Suche-Highlight aus" })
 
--- Fenster-Navigation
-map("n", "<C-h>", "<C-w>h")
-map("n", "<C-j>", "<C-w>j")
-map("n", "<C-k>", "<C-w>k")
-map("n", "<C-l>", "<C-w>l")
+-- Fenster-Navigation (<C-h/j/k/l>) kommt von vim-tmux-navigator (plugins/motion.lua)
 
 -- Explorer (Snacks, ersetzt NvimTree)
 map("n", "<leader>e", function()
