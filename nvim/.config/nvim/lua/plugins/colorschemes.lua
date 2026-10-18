@@ -108,6 +108,8 @@ local tmux_themes = {
   gruvbox = "gruvbox/dark",
 }
 
+local tmux_sync_generation = 0
+
 local function sync_tmux()
   if not vim.env.TMUX or vim.fn.executable("tmux") == 0 then
     return
@@ -119,13 +121,21 @@ local function sync_tmux()
     return
   end
 
-  vim.system({ switcher, theme }, { text = true }, function(result)
-    if result.code ~= 0 then
-      vim.schedule(function()
-        vim.notify(result.stderr or "tmux-ukiyo konnte das Theme nicht wechseln", vim.log.levels.ERROR)
-      end)
+  -- Colorscheme plugins can emit several ColorScheme events during one switch.
+  -- Coalesce them and run the script serially so Ukiyo cannot append duplicate
+  -- status segments when multiple updates race.
+  tmux_sync_generation = tmux_sync_generation + 1
+  local generation = tmux_sync_generation
+  vim.defer_fn(function()
+    if generation ~= tmux_sync_generation then
+      return
     end
-  end)
+
+    local result = vim.system({ switcher, theme }, { text = true }):wait()
+    if result.code ~= 0 then
+      vim.notify(result.stderr or "tmux-ukiyo konnte das Theme nicht wechseln", vim.log.levels.ERROR)
+    end
+  end, 100)
 end
 
 vim.api.nvim_create_autocmd("ColorScheme", {
